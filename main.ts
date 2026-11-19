@@ -3,7 +3,7 @@
 // directory and writes /output/dossier.json with buildDossier from
 // vendor/makefun-app.ts. Deterministic: two runs to two directories write
 // byte-identical files (sorted copy order, no timestamps in any output).
-import { cpSync, existsSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
+import { cpSync, existsSync, mkdirSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildDossier } from './vendor/makefun-app.ts';
@@ -21,7 +21,11 @@ function handInEntry(): void {
   const shotsSrc = join(repoRoot, 'screenshots');
   if (!existsSync(appSrc)) throw new Error('app/: no such directory in this repository');
   if (!existsSync(shotsSrc)) throw new Error('screenshots/: no such directory in this repository');
-  rmSync(outputDir, { recursive: true, force: true });
+  if (existsSync(outputDir)) {
+    for (const entry of readdirSync(outputDir)) {
+      rmSync(join(outputDir, entry), { recursive: true, force: true });
+    }
+  }
   mkdirSync(outputDir, { recursive: true });
   copyTreeSorted(appSrc, join(outputDir, 'app'));
   copyTreeSorted(shotsSrc, join(outputDir, 'screenshots'));
