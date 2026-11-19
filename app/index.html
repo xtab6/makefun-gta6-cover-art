@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vice City Cover Studio — GTA-style poster maker</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header id="topbar">
+  <div class="brand">
+    <span class="brand-sun" aria-hidden="true"></span>
+    <div>
+      <h1>VICE CITY COVER STUDIO</h1>
+      <p>Turn any photo into GTA-style poster cover art. 100% offline — photos never leave your machine.</p>
+    </div>
+  </div>
+  <div class="top-actions">
+    <button id="btnSampleAll" type="button">Load sample photos</button>
+    <button id="btnExportTop" type="button" class="primary">Export PNG</button>
+  </div>
+</header>
+
+<main id="editor">
+  <section class="stage">
+    <div class="canvas-wrap">
+      <canvas id="preview" width="960" height="540"></canvas>
+      <div id="panelChip" class="panel-chip">Panel 1 — drag to move the photo, scroll to zoom</div>
+    </div>
+    <p class="hint">Click a panel to select it. Drag inside it to reposition the photo. Scroll to zoom. One photo can fill every panel — or give each panel its own.</p>
+  </section>
+
+  <aside class="controls" id="controls">
+    <section class="group" id="groupPhotos">
+      <h2>1 · Photos</h2>
+      <p class="group-note">Upload 1–3 photos from your machine (read locally, never uploaded), or use the built-in samples.</p>
+      <div class="slots">
+        <label class="slot" id="slot0">
+          <input type="file" id="file0" accept="image/*" hidden>
+          <span class="slot-thumb" id="thumb0">+</span>
+          <span class="slot-label">Photo 1</span>
+        </label>
+        <label class="slot" id="slot1">
+          <input type="file" id="file1" accept="image/*" hidden>
+          <span class="slot-thumb" id="thumb1">+</span>
+          <span class="slot-label">Photo 2</span>
+        </label>
+        <label class="slot" id="slot2">
+          <input type="file" id="file2" accept="image/*" hidden>
+          <span class="slot-thumb" id="thumb2">+</span>
+          <span class="slot-label">Photo 3</span>
+        </label>
+      </div>
+      <div class="row">
+        <button id="btnSampleBoulevard" type="button">Sample: Boulevard</button>
+        <button id="btnSamplePier" type="button">Sample: Pier</button>
+      </div>
+    </section>
+
+    <section class="group" id="groupLayout">
+      <h2>2 · Layout</h2>
+      <div class="layout-grid" id="layoutGrid">
+        <button type="button" data-layout="diagonal" class="layout-btn active">
+          <span class="layout-icon diagonal"></span>Diagonal Split
+        </button>
+        <button type="button" data-layout="trio" class="layout-btn">
+          <span class="layout-icon trio"></span>Hero + Two
+        </button>
+        <button type="button" data-layout="hero" class="layout-btn">
+          <span class="layout-icon hero"></span>Single Hero
+        </button>
+        <button type="button" data-layout="grid" class="layout-btn">
+          <span class="layout-icon grid"></span>Four Grid
+        </button>
+      </div>
+    </section>
+
+    <section class="group" id="groupPanel">
+      <h2>3 · Selected panel</h2>
+      <label class="field">Photo in this panel
+        <select id="panelPhoto">
+          <option value="0">Photo 1</option>
+          <option value="1">Photo 2</option>
+          <option value="2">Photo 3</option>
+          <option value="-1">Sunset artwork (no photo)</option>
+        </select>
+      </label>
+      <label class="field">Zoom
+        <input type="range" id="panelZoom" min="0.5" max="3" step="0.01" value="1">
+      </label>
+      <label class="field">Fit
+        <select id="panelFit">
+          <option value="cover">Cover — fill the panel</option>
+          <option value="contain">Contain — show the whole photo</option>
+        </select>
+      </label>
+      <div class="row">
+        <button id="btnResetCrop" type="button">Reset crop</button>
+        <button id="btnFillAll" type="button">Fill all panels with this photo</button>
+      </div>
+    </section>
+
+    <section class="group" id="groupCaption">
+      <h2>4 · Caption</h2>
+      <label class="field">Main title
+        <input type="text" id="titleText" value="NEON SHORE" maxlength="24">
+      </label>
+      <label class="field">Tagline
+        <input type="text" id="taglineText" value="Sunset heist on the coast" maxlength="48">
+      </label>
+      <div class="field">Title colour
+        <div class="swatches" id="titleSwatches">
+          <button type="button" data-color="#ffffff" class="swatch active" style="background:#ffffff" aria-label="White"></button>
+          <button type="button" data-color="#ffd400" class="swatch" style="background:#ffd400" aria-label="Yellow"></button>
+          <button type="button" data-color="#ff2e88" class="swatch" style="background:#ff2e88" aria-label="Pink"></button>
+          <button type="button" data-color="#00e5ff" class="swatch" style="background:#00e5ff" aria-label="Cyan"></button>
+          <button type="button" data-color="#111111" class="swatch" style="background:#111111" aria-label="Black"></button>
+        </div>
+      </div>
+      <div class="row">
+        <label class="check"><input type="checkbox" id="titleOutline" checked> Bold outline</label>
+        <label class="field inline">Position
+          <select id="titlePos">
+            <option value="bottom">Bottom</option>
+            <option value="top">Top</option>
+          </select>
+        </label>
+      </div>
+    </section>
+
+    <section class="group" id="groupGrade">
+      <h2>5 · Colour grade</h2>
+      <div class="grade-grid" id="gradeGrid">
+        <button type="button" data-grade="sunset" class="grade-btn active">
+          <span class="grade-dot sunset"></span>Sunset
+        </button>
+        <button type="button" data-grade="neon" class="grade-btn">
+          <span class="grade-dot neon"></span>Neon Nights
+        </button>
+        <button type="button" data-grade="pastel" class="grade-btn">
+          <span class="grade-dot pastel"></span>Vice Pastel
+        </button>
+        <button type="button" data-grade="noir" class="grade-btn">
+          <span class="grade-dot noir"></span>Noir
+        </button>
+      </div>
+    </section>
+
+    <section class="group" id="groupExport">
+      <h2>6 · Export</h2>
+      <div class="size-grid" id="sizeGrid">
+        <button type="button" data-size="1920x1080" class="size-btn active">1920 × 1080<br><span>wide</span></button>
+        <button type="button" data-size="1080x1080" class="size-btn">1080 × 1080<br><span>square</span></button>
+        <button type="button" data-size="1080x1350" class="size-btn">1080 × 1350<br><span>portrait</span></button>
+      </div>
+      <button id="btnExport" type="button" class="primary big">Export PNG</button>
+      <p id="exportStatus" class="status">Ready. Pick a size, hit Export — a PNG downloads straight from your browser.</p>
+    </section>
+  </aside>
+</main>
+
+<canvas id="shotCanvas" width="1280" height="720" hidden></canvas>
+
+<footer id="pagefoot">
+  <p>All art, lettering and grades in this app are original work drawn on canvas — no game logos, artwork or fonts. Sample photos were made with an image model for this app and are free to use. Your photos are read on your machine and never uploaded anywhere.</p>
+</footer>
+
+<script type="module" src="src/app.js"></script>
+</body>
+</html>
